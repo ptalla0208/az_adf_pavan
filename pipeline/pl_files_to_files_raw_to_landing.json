@@ -34,7 +34,7 @@
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
 							"quoteAllText": true,
-							"fileExtension": ".txt"
+							"fileExtension": ""
 						}
 					},
 					"enableStaging": false,
@@ -83,16 +83,19 @@
 		],
 		"parameters": {
 			"src_conatiner": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "raw"
 			},
 			"src_filename": {
 				"type": "string"
 			},
 			"src_file_extension": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "csv"
 			},
 			"dest_container": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "landing"
 			}
 		},
 		"folder": {
