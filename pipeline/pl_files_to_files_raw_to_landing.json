@@ -1,0 +1,106 @@
+{
+	"name": "pl_files_to_files_raw_to_landing",
+	"properties": {
+		"activities": [
+			{
+				"name": "copy_data_fm_raw_to_landing",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ""
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_general_use_src",
+						"type": "DatasetReference",
+						"parameters": {
+							"src_container_name": {
+								"value": "@pipeline().parameters.src_conatiner",
+								"type": "Expression"
+							},
+							"src_file_name": {
+								"value": "@pipeline().parameters.src_filename",
+								"type": "Expression"
+							},
+							"src_file_extension": {
+								"value": "@pipeline().parameters.src_file_extension",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_generic_use_dest",
+						"type": "DatasetReference",
+						"parameters": {
+							"destContainerName": {
+								"value": "@pipeline().parameters.dest_container",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"src_conatiner": {
+				"type": "string",
+				"defaultValue": "raw"
+			},
+			"src_filename": {
+				"type": "string"
+			},
+			"src_file_extension": {
+				"type": "string",
+				"defaultValue": "csv"
+			},
+			"dest_container": {
+				"type": "string",
+				"defaultValue": "landing"
+			}
+		},
+		"folder": {
+			"name": "copy_from_src_adls_raw_dest_adls_landing"
+		},
+		"annotations": []
+	}
+}
