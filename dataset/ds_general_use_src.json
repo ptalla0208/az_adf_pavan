@@ -2,7 +2,7 @@
 	"name": "ds_general_use_src",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "ls_az_adls_src",
+			"referenceName": "ls_adls_src",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {

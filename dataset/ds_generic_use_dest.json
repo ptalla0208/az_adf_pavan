@@ -2,7 +2,7 @@
 	"name": "ds_generic_use_dest",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "ls_az_adls_dest",
+			"referenceName": "ls_adls_dest",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
