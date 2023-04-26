@@ -130,6 +130,11 @@
 				"defaultValue": "azdestinationadls"
 			}
 		},
+		"variables": {
+			"sadasd": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "copy_from_src_adls_raw_dest_adls_landing"
 		},
