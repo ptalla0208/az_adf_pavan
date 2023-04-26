@@ -63,6 +63,14 @@
 							"src_file_extension": {
 								"value": "@pipeline().parameters.src_file_extension",
 								"type": "Expression"
+							},
+							"ds_param_secret_src": {
+								"value": "@pipeline().parameters.src_adls_secret_key_name",
+								"type": "Expression"
+							},
+							"ds_param_sa_url_part_src": {
+								"value": "@pipeline().parameters.src_adls_sa_name",
+								"type": "Expression"
 							}
 						}
 					}
@@ -74,6 +82,14 @@
 						"parameters": {
 							"destContainerName": {
 								"value": "@pipeline().parameters.dest_container",
+								"type": "Expression"
+							},
+							"ds_param_secret_dest": {
+								"value": "@pipeline().parameters.dest_adls_secret_key_name",
+								"type": "Expression"
+							},
+							"ds_param_sa_url_part_dest": {
+								"value": "@pipeline().parameters.dest_adls_sa_name",
 								"type": "Expression"
 							}
 						}
@@ -96,6 +112,22 @@
 			"dest_container": {
 				"type": "string",
 				"defaultValue": "landing"
+			},
+			"src_adls_secret_key_name": {
+				"type": "string",
+				"defaultValue": "srcadlskeydv"
+			},
+			"dest_adls_secret_key_name": {
+				"type": "string",
+				"defaultValue": "destadlskv"
+			},
+			"src_adls_sa_name": {
+				"type": "string",
+				"defaultValue": "sourceadls"
+			},
+			"dest_adls_sa_name": {
+				"type": "string",
+				"defaultValue": "azdestinationadls"
 			}
 		},
 		"folder": {

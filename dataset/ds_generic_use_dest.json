@@ -2,11 +2,27 @@
 	"name": "ds_generic_use_dest",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "ls_adls_dest",
-			"type": "LinkedServiceReference"
+			"referenceName": "ls_adlsg2_general_use",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"secretName": {
+					"value": "@dataset().ds_param_secret_dest",
+					"type": "Expression"
+				},
+				"adls_dfs_url": {
+					"value": "@concat('https://',dataset().ds_param_sa_url_part_dest,'.dfs.core.windows.net/')",
+					"type": "Expression"
+				}
+			}
 		},
 		"parameters": {
 			"destContainerName": {
+				"type": "string"
+			},
+			"ds_param_secret_dest": {
+				"type": "string"
+			},
+			"ds_param_sa_url_part_dest": {
 				"type": "string"
 			}
 		},

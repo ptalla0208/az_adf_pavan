@@ -2,8 +2,18 @@
 	"name": "ds_general_use_src",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "ls_adls_src",
-			"type": "LinkedServiceReference"
+			"referenceName": "ls_adlsg2_general_use",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"secretName": {
+					"value": "@dataset().ds_param_secret_src",
+					"type": "Expression"
+				},
+				"adls_dfs_url": {
+					"value": "@concat('https://', dataset().ds_param_sa_url_part_src,'.dfs.core.windows.net/')",
+					"type": "Expression"
+				}
+			}
 		},
 		"parameters": {
 			"src_container_name": {
@@ -13,6 +23,12 @@
 				"type": "string"
 			},
 			"src_file_extension": {
+				"type": "string"
+			},
+			"ds_param_secret_src": {
+				"type": "string"
+			},
+			"ds_param_sa_url_part_src": {
 				"type": "string"
 			}
 		},
