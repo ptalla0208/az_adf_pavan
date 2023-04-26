@@ -12,7 +12,7 @@
 		"annotations": [],
 		"type": "AzureBlobFS",
 		"typeProperties": {
-			"url": "https://azdestinationadls.dfs.core.windows.net/",
+			"url": "@{linkedService().adls_dfs_url}",
 			"accountKey": {
 				"type": "AzureKeyVaultSecret",
 				"store": {
