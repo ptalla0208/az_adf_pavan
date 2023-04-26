@@ -1,0 +1,29 @@
+{
+	"name": "AzureDataLakeStorage1",
+	"properties": {
+		"parameters": {
+			"secretName": {
+				"type": "string"
+			},
+			"adls_dfs_url": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://azdestinationadls.dfs.core.windows.net/",
+			"accountKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ls_generaluse_azkv",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": {
+					"value": "@linkedService().secretName",
+					"type": "Expression"
+				}
+			}
+		}
+	}
+}
