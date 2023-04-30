@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Lookup1",
+				"name": "Lookup for product row count",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
@@ -32,11 +32,12 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "If Condition check for product count",
+				"description": "If Condition check for product count is grater than 10",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Lookup1",
+						"activity": "Lookup for product row count",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -45,7 +46,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(activity('Lookup1').output.firstRow.product_cnt, 10)",
+						"value": "@greater(activity('Lookup for product row count').output.firstRow.product_cnt, 10)",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
