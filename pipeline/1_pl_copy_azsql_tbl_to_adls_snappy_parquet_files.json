@@ -1,5 +1,5 @@
 {
-	"name": "pl_copy_azsql_tbl_to_adls_snappy_parquet_files",
+	"name": "1_pl_copy_azsql_tbl_to_adls_snappy_parquet_files",
 	"properties": {
 		"activities": [
 			{
