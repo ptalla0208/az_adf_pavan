@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "5_pl_copy_all_tbl_files_batch_cnt_4",
 	"properties": {
 		"activities": [
 			{
@@ -53,15 +53,16 @@
 						"type": "Expression"
 					},
 					"isSequential": false,
+					"batchCount": 4,
 					"activities": [
 						{
-							"name": "Execute Pipeline1",
+							"name": "Execute Pipeline tbl_to_files_generic_use",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "pl_copy_azsql_tbl_to_adls_snappy_parquet_files",
+									"referenceName": "1_pl_copy_azsql_tbl_to_adls_snappy_parquet_files",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
