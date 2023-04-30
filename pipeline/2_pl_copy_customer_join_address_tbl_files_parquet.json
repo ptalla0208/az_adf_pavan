@@ -1,0 +1,66 @@
+{
+	"name": "2_pl_copy_customer_join_address_tbl_files_parquet",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy Tables_with_join_condition and query",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select \n\tc.customerid,ca.addressid, c.title, c.firstname, c.lastname, c.companyname, c.salesperson, c.emailaddress, c.phone,ca.addresstype\t \nfrom saleslt.customer c\njoin saleslt.customeraddress ca\non c.customerid = ca.customerid;",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_azsql_general_use_tbl",
+						"type": "DatasetReference",
+						"parameters": {
+							"schemaName": "SalesLT",
+							"tableName": "Customer"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_azadlsg2_general_use_snappy_parquet",
+						"type": "DatasetReference",
+						"parameters": {
+							"directryName": "customer_and_address"
+						}
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}
