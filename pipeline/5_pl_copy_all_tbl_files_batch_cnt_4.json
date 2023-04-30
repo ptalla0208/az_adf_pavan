@@ -65,7 +65,7 @@
 									"referenceName": "1_pl_copy_azsql_tbl_to_adls_snappy_parquet_files",
 									"type": "PipelineReference"
 								},
-								"waitOnCompletion": true,
+								"waitOnCompletion": false,
 								"parameters": {
 									"pl_pram_src_schemaName": {
 										"value": "@item().TABLE_SCHEMA",
