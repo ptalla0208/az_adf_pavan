@@ -1,0 +1,111 @@
+{
+	"name": "Copy Data From TBL to CSV on Blob",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('tablesList')",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".csv"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_azsql_tbl",
+									"type": "DatasetReference",
+									"parameters": {
+										"tblName": {
+											"value": "@item()",
+											"type": "Expression"
+										},
+										"schemaName": "SALESLT"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_test_csv_files",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "tablesList",
+					"value": {
+						"value": "@pipeline().parameters.inputTBLArray",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"inputTBLArray": {
+				"type": "array"
+			}
+		},
+		"variables": {
+			"tablesList": {
+				"type": "Array"
+			}
+		},
+		"annotations": []
+	}
+}
