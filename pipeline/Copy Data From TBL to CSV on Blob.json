@@ -5,18 +5,11 @@
 			{
 				"name": "ForEach1",
 				"type": "ForEach",
-				"dependsOn": [
-					{
-						"activity": "Set variable1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@variables('tablesList')",
+						"value": "@pipeline().parameters.inputTBLArray",
 						"type": "Expression"
 					},
 					"activities": [
@@ -80,19 +73,6 @@
 							]
 						}
 					]
-				}
-			},
-			{
-				"name": "Set variable1",
-				"type": "SetVariable",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "tablesList",
-					"value": {
-						"value": "@pipeline().parameters.inputTBLArray",
-						"type": "Expression"
-					}
 				}
 			}
 		],
