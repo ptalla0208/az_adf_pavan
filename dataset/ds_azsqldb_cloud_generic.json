@@ -1,0 +1,30 @@
+{
+	"name": "ds_azsqldb_cloud_generic",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_az_sql_generic",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"t_schemaName": {
+				"type": "string"
+			},
+			"t_tblName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().t_schemaName",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().t_tblName",
+				"type": "Expression"
+			}
+		}
+	}
+}

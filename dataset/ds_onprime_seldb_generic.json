@@ -1,0 +1,30 @@
+{
+	"name": "ds_onprime_seldb_generic",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_onprime_sql_server",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"s_schemaName": {
+				"type": "string"
+			},
+			"s_tableName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().s_schemaName",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().s_tableName",
+				"type": "Expression"
+			}
+		}
+	}
+}
