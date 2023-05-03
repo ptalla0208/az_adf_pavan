@@ -1,0 +1,16 @@
+{
+	"name": "ls_onprime_sql_server",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=False;data source=DESKTOP-QBT0CO4\\SQLEXPRESS;initial catalog=salesdb;user id=pavan",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJmM2Q1ZjJlYS0yNzlmLTQ1NTQtOWIyNy1jZmY0ZWU0NGFiMmEiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "self-hosted-integrationRuntime-ir",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
