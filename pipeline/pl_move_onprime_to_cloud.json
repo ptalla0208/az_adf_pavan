@@ -126,7 +126,7 @@
 							}
 						},
 						{
-							"name": "Copy data1",
+							"name": "Copy Delta records from source to sink",
 							"type": "Copy",
 							"dependsOn": [
 								{
@@ -200,11 +200,11 @@
 							]
 						},
 						{
-							"name": "Script1",
+							"name": "Update Script for watermark tbl after pipe run",
 							"type": "Script",
 							"dependsOn": [
 								{
-									"activity": "Copy data1",
+									"activity": "Copy Delta records from source to sink",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -227,7 +227,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "update @{pipeline().parameters.watermk_tbl_schema}.@{pipeline().parameters.watermk_tbl_name}\nset @{item().last_run_date} = getdate()",
+											"value": "update @{pipeline().parameters.watermk_tbl_schema}.@{pipeline().parameters.watermk_tbl_name}\nset last_run_date = getdate()\nwhere tablename = '@{item().tablename}'",
 											"type": "Expression"
 										}
 									}
