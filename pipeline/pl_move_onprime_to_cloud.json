@@ -83,7 +83,17 @@
 								},
 								"dataset": {
 									"referenceName": "ds_azsqldb_cloud_generic",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"target_schema": {
+											"value": "@pipeline().parameters.target_schema",
+											"type": "Expression"
+										},
+										"target_tbl_name": {
+											"value": "@pipeline().parameters.watermk_tbl_name",
+											"type": "Expression"
+										}
+									}
 								}
 							}
 						},
@@ -144,7 +154,7 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": {
-										"value": "select *\nfrom\n    @{item().schemaName}.@{item().tablename}\nwhere\n    @{item().modified_on} > @{activity('Lookup for last_load_run_timestamp').output.firstRow.last_run_date}\n    and\n    @{item().modified_on} <= @{activity('Lookup for each dest table max_timestamp').output.firstRow.max_ts_fm_src}",
+										"value": "select *\nfrom\n    tpch_sf10l.@{item().tablename}\nwhere\n    @{item().modified_date_col} > '@{activity('Lookup for last_load_run_timestamp').output.firstRow.last_run_date}'\n    and\n    @{item().modified_date_col} <= '@{activity('Lookup for each dest table max_timestamp').output.firstRow.max_ts_fm_src}'",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
