@@ -1,0 +1,21 @@
+{
+	"name": "pl_move_onprime_to_snowflake_CDC",
+	"properties": {
+		"activities": [
+			{
+				"name": "Source Data LUP",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": []
+			}
+		],
+		"annotations": []
+	}
+}
