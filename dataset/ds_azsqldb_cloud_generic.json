@@ -5,8 +5,26 @@
 			"referenceName": "ls_az_sql_generic",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"target_schema": {
+				"type": "string"
+			},
+			"target_tbl_name": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": []
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().target_schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().target_tbl_name",
+				"type": "Expression"
+			}
+		}
 	}
 }

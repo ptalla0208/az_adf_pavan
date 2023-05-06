@@ -16,30 +16,227 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SqlServerSource",
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "select *\nfrom @{pipeline().parameters.watermk_tbl_schema}.@{pipeline().parameters.watermk_tbl_name}",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "ds_onprime_seldb_generic",
-						"type": "DatasetReference"
+						"referenceName": "ds_azsqldb_cloud_generic",
+						"type": "DatasetReference",
+						"parameters": {
+							"target_schema": {
+								"value": "@pipeline().parameters.target_schema",
+								"type": "Expression"
+							},
+							"target_tbl_name": {
+								"value": "@pipeline().parameters.target_schema",
+								"type": "Expression"
+							}
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach loop on Tables_with_watermarks",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get All Onpremise TBls LIST",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get All Onpremise TBls LIST').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Lookup for last_load_run_timestamp",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "select last_run_date\nfrom @{pipeline().parameters.watermk_tbl_schema}.@{pipeline().parameters.watermk_tbl_name}\nwhere tablename = '@{item().tablename}'",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "ds_azsqldb_cloud_generic",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Lookup for each dest table max_timestamp",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "select \n    max(modified_on) as max_ts_fm_src\nfrom\n    @{item().schemaName}.@{item().tablename}",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "ds_onprime_seldb_generic",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Lookup for last_load_run_timestamp",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "Lookup for each dest table max_timestamp",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "select *\nfrom\n    @{item().schemaName}.@{item().tablename}\nwhere\n    @{item().modified_on} > @{activity('Lookup for last_load_run_timestamp').output.firstRow.last_run_date}\n    and\n    @{item().modified_on} <= @{activity('Lookup for each dest table max_timestamp').output.firstRow.max_ts_fm_src}",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false,
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_onprime_seldb_generic",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_azsqldb_cloud_generic",
+									"type": "DatasetReference",
+									"parameters": {
+										"target_schema": {
+											"value": "@pipeline().parameters.target_schema",
+											"type": "Expression"
+										},
+										"target_tbl_name": {
+											"value": "@item().tablename",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Script1",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Copy data1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "ls_az_sql_generic",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "update @{pipeline().parameters.watermk_tbl_schema}.@{pipeline().parameters.watermk_tbl_name}\nset @{item().last_run_date} = getdate()",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						}
+					]
 				}
 			}
 		],
 		"parameters": {
-			"pparam_s_schema": {
-				"type": "string",
-				"defaultValue": "tpch_sf10l"
-			},
-			"pparam_s_table": {
+			"watermk_tbl_schema": {
 				"type": "string"
 			},
-			"pparam_t_schema": {
-				"type": "string",
-				"defaultValue": "salesdwh"
+			"watermk_tbl_name": {
+				"type": "string"
 			},
-			"pparam_t_table": {
+			"target_schema": {
 				"type": "string"
 			}
 		},
