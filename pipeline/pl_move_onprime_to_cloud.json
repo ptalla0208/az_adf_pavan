@@ -3,8 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data from on prime tbl to cloud",
-				"type": "Copy",
+				"name": "Get All Onpremise TBls LIST",
+				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -20,161 +20,10 @@
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
-					"sink": {
-						"type": "AzureSqlSink",
-						"writeBehavior": "insert",
-						"sqlWriterUseTableLock": false
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
+					"dataset": {
 						"referenceName": "ds_onprime_seldb_generic",
-						"type": "DatasetReference",
-						"parameters": {
-							"s_schemaName": {
-								"value": "@pipeline().parameters.pparam_s_schema",
-								"type": "Expression"
-							},
-							"s_tableName": {
-								"value": "@pipeline().parameters.pparam_s_table",
-								"type": "Expression"
-							}
-						}
+						"type": "DatasetReference"
 					}
-				],
-				"outputs": [
-					{
-						"referenceName": "ds_azsqldb_cloud_generic",
-						"type": "DatasetReference",
-						"parameters": {
-							"t_schemaName": {
-								"value": "@pipeline().parameters.pparam_t_schema",
-								"type": "Expression"
-							},
-							"t_tblName": {
-								"value": "@pipeline().parameters.pparam_t_table",
-								"type": "Expression"
-							}
-						}
-					}
-				]
-			},
-			{
-				"name": "Copy data from staging tbl to final tables",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Copy data from on prime tbl to cloud",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"sink": {
-						"type": "AzureSqlSink",
-						"writeBehavior": "insert",
-						"sqlWriterUseTableLock": false
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "ds_azsqldb_cloud_generic",
-						"type": "DatasetReference",
-						"parameters": {
-							"t_schemaName": {
-								"value": "@pipeline().parameters.pparam_t_schema",
-								"type": "Expression"
-							},
-							"t_tblName": {
-								"value": "@pipeline().parameters.pparam_t_table",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "ds_azsqldb_cloud_generic",
-						"type": "DatasetReference",
-						"parameters": {
-							"t_schemaName": {
-								"value": "@pipeline().parameters.pparam_t_schema",
-								"type": "Expression"
-							},
-							"t_tblName": {
-								"value": "@split(pipeline().parameters.pparam_t_table,'_')[0]",
-								"type": "Expression"
-							}
-						}
-					}
-				]
-			},
-			{
-				"name": "Post Copy Script for truncate stg tables",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "Copy data from staging tbl to final tables",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "ls_az_sql_generic",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('truncate table ', pipeline().parameters.pparam_t_schema,'.',pipeline().parameters.pparam_t_table)",
-								"type": "Expression"
-							}
-						}
-					],
-					"scriptBlockExecutionTimeout": "02:00:00"
 				}
 			}
 		],
