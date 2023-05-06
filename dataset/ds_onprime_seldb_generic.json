@@ -5,14 +5,6 @@
 			"referenceName": "ls_onprime_sql_server",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"s_schemaName": {
-				"type": "string"
-			},
-			"s_tableName": {
-				"type": "string"
-			}
-		},
 		"annotations": [],
 		"type": "SqlServerTable",
 		"schema": []
